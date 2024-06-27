@@ -1,0 +1,54 @@
+'use client'
+import { db, storage } from '@/firebase.config';
+import { collection, doc, getDoc, getDocs } from 'firebase/firestore'
+import { getDownloadURL, listAll, ref } from 'firebase/storage';
+import Image from 'next/image';
+import Link from 'next/link';
+import React, { useEffect, useState } from 'react'
+
+export const Navbar = () => {
+
+    const [logoImage, setLogoImage] = useState([])
+
+    useEffect(() => {
+        
+        const getImages = async () => {
+            try {
+              const imageRef = ref(storage, 'Logo')
+              const result = await listAll(imageRef)
+              const urlPromises = result.items.map((itemRef) => getDownloadURL(itemRef))
+              const downloadUrls = await Promise.all(urlPromises)
+              setLogoImage(downloadUrls)
+            } catch (error) {
+              console.error('Error fetching images:', error)
+            }
+          }
+          getImages()
+        }, )
+    
+
+
+  return (
+    <div>
+        <nav>
+          <div>
+                {logoImage[0] && <Image
+                className="max-sm:w-[100px]"
+                src={logoImage[0]}
+                width={239}
+                height={146}
+                quality={100} 
+                alt="Linnea SångPedagog"
+                />}
+          </div>
+          <div>
+            <p className='text-xl'>Linnea Olsson</p>
+          </div>
+          <div>
+            
+          </div>
+
+        </nav>
+    </div>
+  )
+}
